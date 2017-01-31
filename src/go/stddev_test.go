@@ -4,8 +4,6 @@ import (
 	"testing"
 )
 
-struct
-
 // standard deviations
 var stddevTests = []struct {
 	points []float64
@@ -61,5 +59,4 @@ func TestRound(t *testing.T) {
 			t.Error("Value ", res, " != expected ", test.result);
 		}
 	}
-
 }

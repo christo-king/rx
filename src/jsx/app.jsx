@@ -1,10 +1,23 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import {Button, ButtonToolbar} from 'react-bootstrap'
 
-class App extends React.Component {
+export class NewStdDevForm extends React.Component {
     render() {
-        return (<div>Yay! An App</div>);
+        return (<div>
+            <form>
+                <ButtonToolbar>
+                    <Button>Submit New Standard Deviation</Button>
+                </ButtonToolbar>
+            </form>
+        </div>)
     }
 }
 
-ReactDOM.render(<App/>, getElementById("main-react-container"))
+export default class App extends React.Component {
+    render() {
+        return (<div><NewStdDevForm/></div>);
+    }
+}
+
+ReactDOM.render(<App/>, document.getElementById("main-react-container"))

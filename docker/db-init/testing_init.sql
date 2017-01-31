@@ -36,7 +36,7 @@ CREATE TABLE `standard_deviation_tbl` (
 
 LOCK TABLES `standard_deviation_tbl` WRITE;
 /*!40000 ALTER TABLE `standard_deviation_tbl` DISABLE KEYS */;
-INSERT INTO `standard_deviation_tbl` VALUES (1,3.2000000000,'{\"5\", \"10\", \"10\", \"10\", \"15\"}');
+INSERT INTO `standard_deviation_tbl` VALUES (1,3.2000000000,'{"points":[\"5\", \"10\", \"10\", \"10\", \"15\"]}');
 /*!40000 ALTER TABLE `standard_deviation_tbl` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

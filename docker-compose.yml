@@ -13,3 +13,17 @@ services:
       volumes:
           - ./db-scripts:/docker-entrypoint-initdb.d
           - ./db-config:/etc/mysql/conf.d
+  gosrv:
+    container_name: gosrv
+    image: ntboes/golang-gin
+    working_dir: /
+    command:
+      - -a
+      - "3001"
+      - run
+      - main.go
+    volumes:
+      - ./src/go:/go/src/app/
+      - ./src/static:/static
+    ports:
+      - 3000:3000
