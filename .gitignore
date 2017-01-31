@@ -1,0 +1,4 @@
+.idea/
+rx.iml
+node_modules
+src/static/bundle.js

@@ -1,0 +1,24 @@
+{
+  "name": "rx",
+  "version": "0.0.1",
+  "author": "Christopher King <cking@enmobilellc.com>",
+  "devDependencies": {
+    "glob": "latest",
+    "webpack": "latest",
+    "webpack-dev-server": "latest",
+    "babel-core": "latest",
+    "babel-loader": "latest",
+    "babel-plugin-transform-react-jsx": "latest",
+    "babel-preset-es2015": "latest",
+    "babel-preset-react": "latest"
+  },
+  "dependencies": {
+    "react": "latest",
+    "react-dom": "latest",
+    "react-bootstrap": "latest"
+  },
+  "scripts": {
+    "dev": "webpack --watch",
+    "dev-build": "webpack"
+  }
+}
