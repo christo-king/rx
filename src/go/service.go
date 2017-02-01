@@ -25,8 +25,10 @@ func main() {
 
 	list := HttpErrorHandler{HandleListStandardDeviations}
 	router.HandleFunc("/standardDeviation", list.HandleHttpErrors).Methods("GET")
-	router.HandleFunc("/standardDeviation/{id}", HandleGetStandardDeviation).Methods("GET")
-	router.HandleFunc("/standardDeviation", HandlePostStandardDeviation).Methods("POST")
+	get := HttpErrorHandler{HandleGetStandardDeviation}
+	router.HandleFunc("/standardDeviation/{id}", get.HandleHttpErrors).Methods("GET")
+	post := HttpErrorHandler{HandlePostStandardDeviation}
+	router.HandleFunc("/standardDeviation", post.HandleHttpErrors).Methods("POST")
 
 	srv := http.Server{Addr: host, Handler: router}
 	srv.ListenAndServe();

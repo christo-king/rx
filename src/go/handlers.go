@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"github.com/gorilla/mux"
 	"database/sql"
-	"log"
 	"encoding/json"
 	"io/ioutil"
 	"errors"
@@ -21,7 +20,7 @@ type StandardDeviation struct {
 }
 
 func HandleListStandardDeviations(w http.ResponseWriter, r *http.Request) HttpError {
-	stmt := "select sd.id, sd.answer, sd.input_data from standard_deviation_tbl"
+	stmt := "select sd.id, sd.answer, sd.input_data from standard_deviation_tbl sd"
 	listerr := HttpOK()
 	var unmarshallStdDev = func(db *sql.DB) {
 		rows, qerr := db.Query(stmt)
@@ -36,20 +35,20 @@ func HandleListStandardDeviations(w http.ResponseWriter, r *http.Request) HttpEr
 			switch {
 			case err == sql.ErrNoRows:
 				w.Write([]byte("{}"))
-				return;
+				return
 			case err != nil:
 				listerr = NewHttpError(500, "Error selecting specified Standard Deviation")
-				return;
+				return
 			default:
 				jsonerr := json.Unmarshal([]byte(sdpStr), &sd)
 				if ( jsonerr != nil) {
 					listerr = NewHttpError(500, "Error selecting specified Standard Deviation")
-					return;
+					return
 				}
 				strout, jsonerr := json.Marshal(sd);
 				if ( jsonerr != nil ) {
 					listerr = NewLogHttpError(500, "Invalid standard deviation result", jsonerr)
-					return;
+					return
 				}
 				w.Write(strout);
 			}
@@ -59,63 +58,73 @@ func HandleListStandardDeviations(w http.ResponseWriter, r *http.Request) HttpEr
 	return listerr
 }
 
-func HandleGetStandardDeviation(w http.ResponseWriter, r *http.Request) {
+func HandleGetStandardDeviation(w http.ResponseWriter, r *http.Request) HttpError {
 	vars := mux.Vars(r)
 	stmt := "select id, answer, input_data from standard_deviation_tbl where id=?"
+	geterr := HttpOK()
 	var unmarshallStdDev = func(db *sql.DB) {
 		var sd StandardDeviation
 		var sdpStr string
 		err := db.QueryRow(stmt, vars["id"]).Scan(&sd.Id, &sd.Answer, &sdpStr)
 		switch {
 		case err == sql.ErrNoRows:
-			w.WriteHeader(404)
+			geterr = NewHttpError(404, "Standard deviation Not found " + string(vars["id"]))
+			return
 		case err != nil:
-			log.Fatal(err)
+			geterr = NewLogHttpError(500, "Unable to query database", err)
+			return
 		default:
 			jsonerr := json.Unmarshal([]byte(sdpStr), &sd)
 			if ( jsonerr != nil) {
-				panic(jsonerr)
+				geterr = NewLogHttpError(500, "database values for this standard deviation are invalid", jsonerr)
+				return
 			}
 			strout, jsonerr := json.Marshal(sd);
 			if ( jsonerr != nil ) {
-				panic(jsonerr);
+				geterr = NewLogHttpError(500, "database values for this standard deviation are invalid", jsonerr)
+				return
 			}
 			w.Write(strout);
 		}
 	}
 	getDb(unmarshallStdDev)
+	return geterr;
 }
 
-func HandlePostStandardDeviation(w http.ResponseWriter, r *http.Request) {
+func HandlePostStandardDeviation(w http.ResponseWriter, r *http.Request) HttpError {
+	posterr := HttpOK()
+
 	var bodybytes, strerr = ioutil.ReadAll(r.Body)
 	var bodystr = string(bodybytes)
 	if ( strerr != nil ) {
-		log.Fatal(strerr)
-		w.WriteHeader(500)
+		posterr = NewLogHttpError(400, "Invalid standard deviation body", strerr)
+		return posterr
 	}
+
 	var sd StandardDeviation
-	sd.Id = -1
 	jerr := json.Unmarshal(bodybytes, &sd)
 	if ( jerr != nil ) {
-		log.Fatal(jerr)
-		w.WriteHeader(500)
+		posterr = NewLogHttpError(400, "Unable to decode standard deviation", jerr)
+		return posterr
 	}
+	sd.Id = -1
 	sd.Answer = calcStdDev(sd.Points)
 
 	stmt := "insert into standard_deviation_tbl(answer, input_data) values(?,?)";
 	var saveNewStdDev = func(db *sql.DB) {
 		res, dberr := db.Exec(stmt, sd.Answer, bodystr);
 		if ( dberr != nil ) {
-			log.Fatal(dberr);
-			w.WriteHeader(500)
+			posterr = NewLogHttpError(500, "Unable to insert new standard deviation", dberr)
+			return
 		}
 		newId, inserr := res.LastInsertId();
 		if (inserr != nil) {
-			log.Fatal(inserr)
-			http.Error(w, "", 500)
+			posterr = NewLogHttpError(500, "Unable to get id for new standard deviation", dberr)
+			return
 		}
 		sd.Id = newId
 		json.NewEncoder(w).Encode(sd)
 	}
 	getDb(saveNewStdDev)
+	return posterr
 }
