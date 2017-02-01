@@ -11,8 +11,7 @@ services:
       ports:
           - 3306:3306
       volumes:
-          - ./db-scripts:/docker-entrypoint-initdb.d
-          - ./db-config:/etc/mysql/conf.d
+          - ./docker/db-init:/docker-entrypoint-initdb.d
   gosrv:
     container_name: gosrv
     image: ntboes/golang-gin
