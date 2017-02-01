@@ -18,7 +18,7 @@ This project was built with the following technologies, which are therefore also
 - [React-Bootstrap](link:https://react-bootstrap.github.io/)
 - [Postman](link:https://www.getpostman.com/)
 
-To make full use of this project, you will need to have these installed.  Minimally, a recent, native, version of Docker (which includes the docker-compose command line utility), and npm will nbe necessary to run the environment.
+To make full use of this project, you will need to have these installed.  Minimally, a recent, native, version of Docker (which includes the docker-compose command line utility), a working command-line Go SDK (only for 'go get' library retrieval), and npm will nbe necessary to run the environment.
 
 ###Instructions for Usage
 After checking out this project, you will have to start a docker-compose instance of the Go server (Gin) and start up webpack.  These will provide you with a base running environment which you can then work with.
