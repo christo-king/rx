@@ -20,7 +20,7 @@ type StandardDeviation struct {
 }
 
 func HandleListStandardDeviations(w http.ResponseWriter, r *http.Request) HttpError {
-	stmt := "select sd.id, sd.answer, sd.input_data from standard_deviation_tbl sd"
+	stmt := "select sd.id, sd.answer, sd.input_data from standard_deviation_tbl sd order by sd.id desc"
 	listerr := HttpOK()
 	var sdlist []StandardDeviation
 	var unmarshallStdDev = func(db *sql.DB) {

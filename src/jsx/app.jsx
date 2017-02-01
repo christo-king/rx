@@ -47,10 +47,10 @@ export class ListStdDevs extends React.Component {
                         </Row>
                         {this.state.standardDeviations.map((sd) => {
                             return (
-                                <Row className="show-grid">
+                                <Row className="show-grid" key={sd.id}>
                                     <Col xs={3} md={3}>{sd.id}</Col>
                                     <Col xs={3} md={3}>{sd.answer}</Col>
-                                    <Col xs={6} md={6}>{sd.points}</Col>
+                                    <Col xs={6} md={6}>{sd.points.join(', ')}</Col>
                                 </Row>
                             )
                         })}
@@ -69,7 +69,27 @@ export class NewStdDevForm extends React.Component {
 
     handleChange(e) {
         this.setState({value: e.target.value});
-        console.log("Setting value to " + this.state.value)
+    }
+
+    handleSubmit(e) {
+        e.preventDefault()
+        console.log("Submitting " + this.state.value);
+        let points = this.state.value.split(" ").map(parseFloat)
+        let postdata = {points: points}
+
+        var request = new Request('/standardDeviation', {
+            method: 'POST',
+            mode: 'same-origin',
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify(postdata)
+        });
+        fetch(request).then((response) => {
+            return response.json();
+        }).then(() => {
+            this.state.value = ''
+        });
     }
 
     render() {
@@ -88,7 +108,7 @@ export class NewStdDevForm extends React.Component {
                     <FormControl.Feedback />
                 </FormGroup>
                 <ButtonToolbar>
-                    <Button>Add Standard Deviation</Button>
+                    <Button onClick={(e) => this.handleSubmit(e)}>Add Standard Deviation</Button>
                 </ButtonToolbar>
             </form>
         </div>)
