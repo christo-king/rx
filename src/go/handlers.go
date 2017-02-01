@@ -7,7 +7,6 @@ import (
 	"log"
 	"encoding/json"
 	"io/ioutil"
-	"bytes"
 )
 
 type StandardDeviationPoints struct {
@@ -15,9 +14,9 @@ type StandardDeviationPoints struct {
 }
 
 type StandardDeviation struct {
-	Id     int64
-	Answer float64
-	Points StandardDeviationPoints
+	StandardDeviationPoints
+	Id     int64 `json:"id"`
+	Answer float64 `json:"answer"`
 }
 
 func HandleGetStandardDeviation(w http.ResponseWriter, r *http.Request) {
@@ -33,7 +32,7 @@ func HandleGetStandardDeviation(w http.ResponseWriter, r *http.Request) {
 		case err != nil:
 			log.Fatal(err)
 		default:
-			jsonerr := json.Unmarshal([]byte(sdpStr), &sd.Points)
+			jsonerr := json.Unmarshal([]byte(sdpStr), &sd)
 			if ( jsonerr != nil) {
 				panic(jsonerr)
 			}
@@ -49,19 +48,24 @@ func HandleGetStandardDeviation(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandlePostStandardDeviation(w http.ResponseWriter, r *http.Request) {
-	body, ioerr := ioutil.ReadAll(r.Body)
-	if ( ioerr != nil ) {
-		log.Fatal(ioerr);
+	var bodybytes, strerr = ioutil.ReadAll(r.Body)
+	var bodystr = string(bodybytes)
+	if ( strerr != nil ) {
+		log.Fatal(strerr)
+		w.WriteHeader(500)
 	}
-	var sdp StandardDeviationPoints
-	err := json.NewDecoder(bytes.NewReader(body)).Decode(&sdp)
-	if ( err != nil ) {
-		log.Fatal(err)
+	var sd StandardDeviation
+	sd.Id = -1
+	jerr := json.Unmarshal(bodybytes, &sd)
+	if ( jerr != nil ) {
+		log.Fatal(jerr)
+		w.WriteHeader(500)
 	}
-	sd := StandardDeviation{Id: -1, Answer : calcStdDev(sdp.Points), Points: sdp }
+	sd.Answer = calcStdDev(sd.Points)
+
 	stmt := "insert into standard_deviation_tbl(answer, input_data) values(?,?)";
 	var saveNewStdDev = func(db *sql.DB) {
-		res, dberr := db.Exec(stmt, sd.Answer, body);
+		res, dberr := db.Exec(stmt, sd.Answer, bodystr);
 		if ( dberr != nil ) {
 			log.Fatal(dberr);
 			w.WriteHeader(500)
@@ -72,12 +76,7 @@ func HandlePostStandardDeviation(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(500)
 		}
 		sd.Id = newId
-		strout, marsherr := json.Marshal(sd)
-		if ( marsherr != nil ) {
-			log.Fatal(marsherr)
-			w.WriteHeader(500)
-		}
-		w.Write(strout)
+		json.NewEncoder(w).Encode(sd)
 	}
 	getDb(saveNewStdDev)
 }
