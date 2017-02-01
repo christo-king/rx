@@ -6,6 +6,8 @@ import (
 	"database/sql"
 	"log"
 	"encoding/json"
+	"io/ioutil"
+	"bytes"
 )
 
 type StandardDeviationPoints struct {
@@ -13,7 +15,7 @@ type StandardDeviationPoints struct {
 }
 
 type StandardDeviation struct {
-	Id     int
+	Id     int64
 	Answer float64
 	Points StandardDeviationPoints
 }
@@ -46,3 +48,36 @@ func HandleGetStandardDeviation(w http.ResponseWriter, r *http.Request) {
 	getDb(unmarshallStdDev)
 }
 
+func HandlePostStandardDeviation(w http.ResponseWriter, r *http.Request) {
+	body, ioerr := ioutil.ReadAll(r.Body)
+	if ( ioerr != nil ) {
+		log.Fatal(ioerr);
+	}
+	var sdp StandardDeviationPoints
+	err := json.NewDecoder(bytes.NewReader(body)).Decode(&sdp)
+	if ( err != nil ) {
+		log.Fatal(err)
+	}
+	sd := StandardDeviation{Id: -1, Answer : calcStdDev(sdp.Points), Points: sdp }
+	stmt := "insert into standard_deviation_tbl(answer, input_data) values(?,?)";
+	var saveNewStdDev = func(db *sql.DB) {
+		res, dberr := db.Exec(stmt, sd.Answer, body);
+		if ( dberr != nil ) {
+			log.Fatal(dberr);
+			w.WriteHeader(500)
+		}
+		newId, inserr := res.LastInsertId();
+		if (inserr != nil) {
+			log.Fatal(inserr)
+			w.WriteHeader(500)
+		}
+		sd.Id = newId
+		strout, marsherr := json.Marshal(sd)
+		if ( marsherr != nil ) {
+			log.Fatal(marsherr)
+			w.WriteHeader(500)
+		}
+		w.Write(strout)
+	}
+	getDb(saveNewStdDev)
+}

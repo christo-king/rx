@@ -19,6 +19,7 @@ func main() {
 	dir := http.Dir("/static/")
 	fsrv := http.FileServer(dir)
 	router.HandleFunc("/standardDeviation/{id}", HandleGetStandardDeviation).Methods("GET")
+	router.HandleFunc("/standardDeviation", HandlePostStandardDeviation).Methods("POST")
 	router.Handle("/", fsrv)
 	srv := http.Server{Addr: host, Handler: router}
 	testdb := func(db *sql.DB) {
