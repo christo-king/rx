@@ -24,6 +24,8 @@ To make full use of this project, you will need to have these installed.  Minima
 After checking out this project, you will have to start a docker-compose instance of the Go server (Gin) and start up webpack.  These will provide you with a base running environment which you can then work with.
 
 ```bash
+go get github.com/go-sql-driver/mysql
+go get github.com/gorilla/mux
 git clone https://github.com/christo-king/rx 
 cd rx
 npm update
