@@ -27,3 +27,5 @@ services:
       - ./src/static:/static
     ports:
       - 3000:3000
+    links:
+      - rxdb

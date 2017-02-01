@@ -39,7 +39,6 @@ func HandleGetStandardDeviation(w http.ResponseWriter, r *http.Request) {
 			if ( jsonerr != nil ) {
 				panic(jsonerr);
 			}
-			log.Println(strout);
 			w.Write(strout);
 		}
 
