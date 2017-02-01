@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"errors"
-	"log"
 )
 
 type StandardDeviationPoints struct {
@@ -52,7 +51,6 @@ func HandleListStandardDeviations(w http.ResponseWriter, r *http.Request) HttpEr
 		}
 	}
 	getDb(unmarshallStdDev)
-	log.Println("LIST: ", sdlist)
 
 	if ( listerr.code != 200 ) {
 		return listerr

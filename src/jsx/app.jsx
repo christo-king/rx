@@ -1,14 +1,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import {Button, ButtonToolbar} from 'react-bootstrap'
+import {Button, ButtonToolbar, Jumbotron, FormGroup, ControlLabel, FormControl, HelpBlock} from 'react-bootstrap'
 
 export class AppHeader extends React.Component {
     render() {
-        return (  <Jumbotron>
-            <h1>Hello, world!</h1>
-            <p>Standard Deviation testing page.</p>
-            <p><Button bsStyle="primary">Learn more</Button></p>
-        </Jumbotron>)
+        return (
+            <Jumbotron>
+                <h2>Standard Deviation testing page</h2>
+                <br/>
+            </Jumbotron>)
     }
 }
 
@@ -27,11 +27,41 @@ export class ListStdDevs extends React.Component {
 
 }
 export class NewStdDevForm extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {value: ''}
+    }
+
+    getValidationState() {
+        const length = this.state.value.length;
+        if (length > 10) return 'success';
+        else if (length > 5) return 'warning';
+        else if (length > 0) return 'error';
+    }
+
+    handleChange(e) {
+        this.setState({value: e.target.value});
+    }
+
     render() {
         return (<div>
             <form>
+                <FormGroup
+                    controlId="formBasicText"
+                    validationState={this.getValidationState()}
+                >
+                    <ControlLabel>Enter a list of numbers</ControlLabel>
+                    <FormControl
+                        type="text"
+                        value={this.state.value}
+                        placeholder="Example: 28 28 187 38 192 37"
+                        onChange={this.handleChange}
+                    />
+                    <FormControl.Feedback />
+                    <HelpBlock>Validation is based on string length.</HelpBlock>
+                </FormGroup>
                 <ButtonToolbar>
-                    <Button>Submit New Standard Deviation</Button>
+                    <Button>Add Standard Deviation</Button>
                 </ButtonToolbar>
             </form>
         </div>)
@@ -40,7 +70,7 @@ export class NewStdDevForm extends React.Component {
 
 export default class App extends React.Component {
     render() {
-        return (<div><NewStdDevForm/></div>);
+        return (<div><AppHeader/><NewStdDevForm/><br/><ListStdDevs/></div>);
     }
 }
 
