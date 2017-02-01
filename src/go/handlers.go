@@ -7,6 +7,7 @@ import (
 	"log"
 	"encoding/json"
 	"io/ioutil"
+	"errors"
 )
 
 type StandardDeviationPoints struct {
@@ -19,9 +20,48 @@ type StandardDeviation struct {
 	Answer float64 `json:"answer"`
 }
 
+func HandleListStandardDeviations(w http.ResponseWriter, r *http.Request) HttpError {
+	stmt := "select sd.id, sd.answer, sd.input_data from standard_deviation_tbl"
+	listerr := HttpOK()
+	var unmarshallStdDev = func(db *sql.DB) {
+		rows, qerr := db.Query(stmt)
+		if ( qerr != nil ) {
+			listerr = HttpResponse{500, errors.New("Unable to query for Standard Deviations"), qerr}
+			return;
+		}
+		for rows.Next() {
+			var sd StandardDeviation
+			var sdpStr string
+			err := rows.Scan(&sd.Id, &sd.Answer, &sdpStr)
+			switch {
+			case err == sql.ErrNoRows:
+				w.Write([]byte("{}"))
+				return;
+			case err != nil:
+				listerr = NewHttpError(500, "Error selecting specified Standard Deviation")
+				return;
+			default:
+				jsonerr := json.Unmarshal([]byte(sdpStr), &sd)
+				if ( jsonerr != nil) {
+					listerr = NewHttpError(500, "Error selecting specified Standard Deviation")
+					return;
+				}
+				strout, jsonerr := json.Marshal(sd);
+				if ( jsonerr != nil ) {
+					listerr = NewLogHttpError(500, "Invalid standard deviation result", jsonerr)
+					return;
+				}
+				w.Write(strout);
+			}
+		}
+	}
+	getDb(unmarshallStdDev)
+	return listerr
+}
+
 func HandleGetStandardDeviation(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	stmt := "select sd.id, sd.answer, sd.input_data from standard_deviation_tbl sd where sd.id=?"
+	stmt := "select id, answer, input_data from standard_deviation_tbl where id=?"
 	var unmarshallStdDev = func(db *sql.DB) {
 		var sd StandardDeviation
 		var sdpStr string
@@ -42,7 +82,6 @@ func HandleGetStandardDeviation(w http.ResponseWriter, r *http.Request) {
 			}
 			w.Write(strout);
 		}
-
 	}
 	getDb(unmarshallStdDev)
 }
@@ -73,7 +112,7 @@ func HandlePostStandardDeviation(w http.ResponseWriter, r *http.Request) {
 		newId, inserr := res.LastInsertId();
 		if (inserr != nil) {
 			log.Fatal(inserr)
-			w.WriteHeader(500)
+			http.Error(w, "", 500)
 		}
 		sd.Id = newId
 		json.NewEncoder(w).Encode(sd)
