@@ -62,42 +62,60 @@ export class ListStdDevs extends React.Component {
 
 }
 export class NewStdDevForm extends React.Component {
+
     constructor(props) {
         super(props)
-        this.state = {value: '', validationState: ''}
+        this.state = {value: '', validationState: '', valid: true}
+        this.validation = {valid: true, message: ""}
+
     }
 
     handleChange(e) {
         this.setState({value: e.target.value});
     }
 
+    isNumeric(n) {
+        return !isNaN(parseFloat(n)) && isFinite(n);
+    }
+
+    handleValidation() {
+        let invalids = this.state.value.split(" ").filter(isNaN)
+        if (invalids.length > 0) {
+            return "error"
+        }
+        return "success"
+    }
+
     handleSubmit(e) {
         e.preventDefault()
-        console.log("Submitting " + this.state.value);
-        let points = this.state.value.split(" ").map(parseFloat)
-        let postdata = {points: points}
+        let self = this
+        try {
+            let pointstrs = this.state.value.split(" ")
+            let points = pointstrs.filter(self.isNumeric).map(parseFloat)
+            let postdata = {points: points}
 
-        var request = new Request('/standardDeviation', {
-            method: 'POST',
-            mode: 'same-origin',
-            headers: new Headers({
-                'Content-Type': 'application/json'
-            }),
-            body: JSON.stringify(postdata)
-        });
-        fetch(request).then((response) => {
-            return response.json();
-        }).then(() => {
-            this.state.value = ''
-        });
+            var request = new Request('/standardDeviation', {
+                method: 'POST',
+                mode: 'same-origin',
+                headers: new Headers({
+                    'Content-Type': 'application/json'
+                }),
+                body: JSON.stringify(postdata)
+            });
+            fetch(request).then((response) => {
+                return response.json();
+            }).then(() => {
+                this.state.value = ''
+            });
+        } catch (e) {
+
+        }
     }
 
     render() {
-        return (<div>
+        return (<div className="std-dev-input-form">
             <form>
-                <FormGroup
-                    controlId="formBasicText"
-                >
+                <FormGroup controlId="formBasicText" validationState={this.handleValidation()}>
                     <ControlLabel>Enter a list of numbers</ControlLabel>
                     <FormControl
                         type="text"

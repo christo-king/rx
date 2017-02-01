@@ -2,3 +2,8 @@ div.main-container {
     padding: 10px;
     margin: 10px;
 }
+
+div.std-dev-input-form {
+    padding-left: 50px;
+    padding-right: 50px;
+}
