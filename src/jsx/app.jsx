@@ -2,6 +2,15 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import {Button, ButtonToolbar} from 'react-bootstrap'
 
+export class AppHeader extends React.Component {
+    render() {
+        return (  <Jumbotron>
+            <h1>Hello, world!</h1>
+            <p>Standard Deviation testing page.</p>
+            <p><Button bsStyle="primary">Learn more</Button></p>
+        </Jumbotron>)
+    }
+}
 
 export class ListStdDevs extends React.Component {
     componentDidMount() {

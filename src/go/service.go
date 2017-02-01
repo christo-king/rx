@@ -19,14 +19,14 @@ func main() {
 
 	router := mux.NewRouter().StrictSlash(true)
 
-	router.PathPrefix("/").Handler(http.FileServer(http.Dir("/static/")))
-
 	list := HttpErrorHandler{HandleListStandardDeviations}
 	router.HandleFunc("/standardDeviation", list.HandleHttpErrors).Methods("GET")
 	get := HttpErrorHandler{HandleGetStandardDeviation}
 	router.HandleFunc("/standardDeviation/{id}", get.HandleHttpErrors).Methods("GET")
 	post := HttpErrorHandler{HandlePostStandardDeviation}
 	router.HandleFunc("/standardDeviation", post.HandleHttpErrors).Methods("POST")
+
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir("/static/")))
 
 	srv := http.Server{Addr: host, Handler: router}
 	srv.ListenAndServe();

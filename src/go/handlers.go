@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"errors"
+	"log"
 )
 
 type StandardDeviationPoints struct {
@@ -22,6 +23,7 @@ type StandardDeviation struct {
 func HandleListStandardDeviations(w http.ResponseWriter, r *http.Request) HttpError {
 	stmt := "select sd.id, sd.answer, sd.input_data from standard_deviation_tbl sd"
 	listerr := HttpOK()
+	var sdlist []StandardDeviation
 	var unmarshallStdDev = func(db *sql.DB) {
 		rows, qerr := db.Query(stmt)
 		if ( qerr != nil ) {
@@ -45,16 +47,22 @@ func HandleListStandardDeviations(w http.ResponseWriter, r *http.Request) HttpEr
 					listerr = NewHttpError(500, "Error selecting specified Standard Deviation")
 					return
 				}
-				strout, jsonerr := json.Marshal(sd);
-				if ( jsonerr != nil ) {
-					listerr = NewLogHttpError(500, "Invalid standard deviation result", jsonerr)
-					return
-				}
-				w.Write(strout);
+				sdlist = append(sdlist, sd);
 			}
 		}
 	}
 	getDb(unmarshallStdDev)
+	log.Println("LIST: ", sdlist)
+
+	if ( listerr.code != 200 ) {
+		return listerr
+	}
+	strout, jsonerr := json.Marshal(sdlist);
+	if ( jsonerr != nil ) {
+		listerr = NewLogHttpError(500, "Invalid standard deviation result", jsonerr)
+	} else {
+		w.Write(strout);
+	}
 	return listerr
 }
 
