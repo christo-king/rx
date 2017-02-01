@@ -2,6 +2,21 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import {Button, ButtonToolbar} from 'react-bootstrap'
 
+
+export class ListStdDevs extends React.Component {
+    componentDidMount() {
+        fetch('standardDeviation').then((standardDeviations) => standardDeviations.json()).then((standardDeviations) => this.setState({
+            standardDeviations: standardDeviations
+        }));
+    }
+
+    render() {
+        return (
+            <div>Current List : {this.state}</div>
+        )
+    }
+
+}
 export class NewStdDevForm extends React.Component {
     render() {
         return (<div>

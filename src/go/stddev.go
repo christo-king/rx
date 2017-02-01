@@ -4,10 +4,10 @@ import (
 	"math"
 )
 
-
 func calcStdDev(points []float64) float64 {
 	var mean = calcMean(points);
-	devsquares := points[0:]
+	devsquares := make([]float64, len(points))
+	copy(devsquares, points)
 	for index, devsquare := range (devsquares) {
 		devsquares[index] = math.Pow((devsquare - mean), 2);
 	}

@@ -19,9 +19,7 @@ func main() {
 
 	router := mux.NewRouter().StrictSlash(true)
 
-	dir := http.Dir("/static/")
-	fsrv := http.FileServer(dir)
-	router.Handle("/", fsrv)
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir("/static/")))
 
 	list := HttpErrorHandler{HandleListStandardDeviations}
 	router.HandleFunc("/standardDeviation", list.HandleHttpErrors).Methods("GET")

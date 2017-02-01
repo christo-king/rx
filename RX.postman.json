@@ -1,0 +1,82 @@
+{
+	"variables": [],
+	"info": {
+		"name": "RX",
+		"_postman_id": "e5679ffa-2a09-50f0-bc04-94e34ab128df",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Retrieve standard dev",
+			"request": {
+				"url": "http://localhost:3000/standardDeviation/1",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Cache-control",
+						"value": "no-cache",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Create  standard dev",
+			"request": {
+				"url": "http://localhost:3000/standardDeviation",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cache-control",
+						"value": "no-cache",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"points\":[5,10,10,10,15]}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "List standard deviations",
+			"request": {
+				"url": "http://localhost:3000/standardDeviation",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
