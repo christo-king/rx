@@ -32,12 +32,12 @@ Once you've completed the above, you shoul dhave a running environment.  You wil
 
 ...and you should see the testing page
 
-![alt text][logo]
-
-[logo]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 2"
+![Screenshot][screenshot]
 
 
 ###Future Additions
 Future additions will likely include more extensive client-side unit testing and BDD-style tests in Ruby-Cucumber.
 
+
+[screenshot]: https://github.com/christo-king/rx/raw/master/screenshot.png "Screenshot of Testing Page"
 
