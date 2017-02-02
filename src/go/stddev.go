@@ -13,6 +13,7 @@ func calcStdDev(points []float64) float64 {
 	}
 	deviatedmean := calcMean(devsquares);
 	stddev := math.Sqrt(deviatedmean);
+	// TODO: fix this later to accommodate significant digits
 	return round(stddev, 0.5, 1);
 }
 
