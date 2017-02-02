@@ -16,8 +16,7 @@ class StandardDeviationTbl < ActiveRecord::Base
 end
 
 before do
-  request.body.rewind
-  @request_payload = JSON.parse request.body.read
+  headers 'Access-Control-Allow-Origin' => 'http://localhost:3000'
 end
 
 get '/standardDeviation' do
@@ -35,10 +34,17 @@ get '/standardDeviation/:id' do |id|
 end
 
 post '/standardDeviation' do
-  stddev = JSON.parse(request.body.read)
-  stddevnew = StandardDeviationTbl.new do |sd|
-    sd.answer = stddev.points.standard_deviation
-  end
+  stddev_in = request.body.read
+  stddev = JSON.parse(stddev_in)
+
+  stddevnew = StandardDeviationTbl.new
+  stddevnew.answer = stddev['points'].standard_deviation
+  stddevnew.input_data = stddev_in
+  stddevnew.save
+
+  stddev['answer'] = stddevnew.answer
+  stddev['id'] = stddevnew.id
+  stddev.to_json
 end
 
 def db_decode_stddev(stddev)

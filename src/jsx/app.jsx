@@ -96,7 +96,7 @@ export class NewStdDevForm extends React.Component {
         let self = this
         try {
             let points = self.getPointsList(this.state.value).filter(self.isNumeric).map(parseFloat)
-            let postdata = {points: points}
+            let postdata = JSON.stringify({points: points})
 
             var request = new Request('http://' + this.state.server + '/standardDeviation', {
                 method: 'POST',
@@ -104,7 +104,7 @@ export class NewStdDevForm extends React.Component {
                 headers: new Headers({
                     'Content-Type': 'application/json'
                 }),
-                body: JSON.stringify(postdata)
+                body: postdata
             });
             fetch(request).then((response) => {
                 return response.json();
