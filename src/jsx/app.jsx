@@ -31,18 +31,18 @@ export class ListStdDevs extends React.Component {
     render() {
         return (
             <div>
-                <Panel collapsible defaultExpanded header="Existing Standard Deviations List">
+                <Panel collapsible defaultCollapsed header="Existing Standard Deviations List">
                     <Grid>
                         <Row className="show-grid">
-                            <Col xs={3} md={3}><h3>ID</h3></Col>
-                            <Col xs={3} md={3}><h3>Standard Deviation</h3></Col>
+                            <Col xs={1} md={1}><h3>ID</h3></Col>
+                            <Col xs={4} md={4}><h3>Standard Deviation</h3></Col>
                             <Col xs={6} md={6}><h3>Data Point Input</h3></Col>
                         </Row>
                         {this.state.standardDeviations.map((sd) => {
                             return (
                                 <Row className="show-grid" key={sd.id}>
-                                    <Col xs={3} md={3}>{sd.id}</Col>
-                                    <Col xs={3} md={3}>{sd.answer}</Col>
+                                    <Col xs={1} md={1}>{sd.id}</Col>
+                                    <Col xs={4} md={4}>{sd.answer}</Col>
                                     <Col xs={6} md={6}>{sd.points.join(', ')}</Col>
                                 </Row>
                             )
@@ -60,7 +60,6 @@ export class NewStdDevForm extends React.Component {
         super(props)
         this.state = {value: '', validationState: '', valid: true, listener: props.newStandardDeviationListener}
         this.validation = {valid: true, message: ""}
-
     }
 
     handleChange(e) {
@@ -78,8 +77,11 @@ export class NewStdDevForm extends React.Component {
     handleValidation() {
         let invalids = this.getPointsList(this.state.value).filter(isNaN)
         if (invalids.length > 0) {
+            this.validation.valid = false
+            console.log("invalid");
             return "error"
         }
+        this.validation.valid = true
         return "success"
     }
 
@@ -125,7 +127,8 @@ export class NewStdDevForm extends React.Component {
                     <FormControl.Feedback />
                 </FormGroup>
                 <ButtonToolbar>
-                    <Button onClick={(e) => this.handleSubmit(e)}>Add Standard Deviation</Button>
+                    <Button disabled={!this.validation.valid} onClick={(e) => this.handleSubmit(e)}>Add Standard
+                        Deviation</Button>
                 </ButtonToolbar>
             </form>
         </div>)
