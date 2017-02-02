@@ -3,3 +3,5 @@ rx.iml
 node_modules
 src/static/bundle.js
 src/go/gin-bin
+src/ruby/Gemfile.lock
+src/ruby/.bundle
