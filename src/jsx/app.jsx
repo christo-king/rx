@@ -25,14 +25,7 @@ export class AppHeader extends React.Component {
 export class ListStdDevs extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {standardDeviations: []}
-    }
-
-    componentDidMount() {
-        let self = this;
-        fetch('standardDeviation').then((standardDeviations) => standardDeviations.json()).then((standardDeviations) => this.setState({
-            standardDeviations: standardDeviations
-        }));
+        this.state = {standardDeviations: props.standardDeviations}
     }
 
     render() {
@@ -65,7 +58,7 @@ export class NewStdDevForm extends React.Component {
 
     constructor(props) {
         super(props)
-        this.state = {value: '', validationState: '', valid: true}
+        this.state = {value: '', validationState: '', valid: true, listener: props.newStandardDeviationListener}
         this.validation = {valid: true, message: ""}
 
     }
@@ -78,8 +71,12 @@ export class NewStdDevForm extends React.Component {
         return !isNaN(parseFloat(n)) && isFinite(n);
     }
 
+    getPointsList(value) {
+        return value.replace(new RegExp(',', 'g'), '').split(" ")
+    }
+
     handleValidation() {
-        let invalids = this.state.value.split(" ").filter(isNaN)
+        let invalids = this.getPointsList(this.state.value).filter(isNaN)
         if (invalids.length > 0) {
             return "error"
         }
@@ -90,8 +87,7 @@ export class NewStdDevForm extends React.Component {
         e.preventDefault()
         let self = this
         try {
-            let pointstrs = this.state.value.split(" ")
-            let points = pointstrs.filter(self.isNumeric).map(parseFloat)
+            let points = self.getPointsList(this.state.value).filter(self.isNumeric).map(parseFloat)
             let postdata = {points: points}
 
             var request = new Request('/standardDeviation', {
@@ -104,8 +100,11 @@ export class NewStdDevForm extends React.Component {
             });
             fetch(request).then((response) => {
                 return response.json();
-            }).then(() => {
-                this.state.value = ''
+            }).then((newStandardDeviation) => {
+                self.setState({value: ''})
+                if (self.state.listener) {
+                    self.state.listener(newStandardDeviation)
+                }
             });
         } catch (e) {
 
@@ -120,7 +119,7 @@ export class NewStdDevForm extends React.Component {
                     <FormControl
                         type="text"
                         value={this.state.value}
-                        placeholder="Example: 28 28 187 38 192 37"
+                        placeholder="Example: 28.232 28.442 187.644 38.1 192.0 37"
                         onChange={(e) => this.handleChange(e)}
                     />
                     <FormControl.Feedback />
@@ -134,8 +133,39 @@ export class NewStdDevForm extends React.Component {
 }
 
 export default class App extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {standardDeviations: []}
+    }
+
+    componentDidMount() {
+        this.refreshList();
+    }
+
+    refreshList() {
+        let self = this;
+        fetch('standardDeviation').then((standardDeviations) => standardDeviations.json()).then((standardDeviations) => {
+            self.setState({
+                standardDeviations: standardDeviations
+            });
+            self.standardDeviationList.setState({standardDeviations: standardDeviations})
+        });
+    }
+
+    newStandardDeviation(standardDeviation) {
+        this.standardDeviationList.setState((prevState, props) => {
+            prevState.standardDeviations.unshift(standardDeviation)
+            return {standardDeviations: prevState.standardDeviations};
+        });
+    }
+
     render() {
-        return (<div><AppHeader/><NewStdDevForm/><br/><ListStdDevs/></div>);
+        return (<div>
+            <AppHeader/>
+            <NewStdDevForm newStandardDeviationListener={this.newStandardDeviation.bind(this)}/>
+            <ListStdDevs standardDeviations={[]}
+                         ref={(r) => this.standardDeviationList = r}/>
+        </div>);
     }
 }
 
