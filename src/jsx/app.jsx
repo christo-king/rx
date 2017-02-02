@@ -98,9 +98,9 @@ export class NewStdDevForm extends React.Component {
             let points = self.getPointsList(this.state.value).filter(self.isNumeric).map(parseFloat)
             let postdata = {points: points}
 
-            var request = new Request('/standardDeviation', {
+            var request = new Request('http://' + this.state.server + '/standardDeviation', {
                 method: 'POST',
-                mode: 'same-origin',
+                mode: 'cors',
                 headers: new Headers({
                     'Content-Type': 'application/json'
                 }),
@@ -149,9 +149,10 @@ export class ServerChoice extends React.Component {
     }
 
     handleServerChange(e) {
+        console.log(e.target.value);
         this.setState({server: e.target.value})
         if (this.state.listener) {
-            this.state.listener(this.state.server);
+            this.state.listener(e.target.value);
         }
     }
 
@@ -190,6 +191,8 @@ export default class App extends React.Component {
 
     serverChanged(server) {
         this.setState({server: server})
+        this.standardDeviationList.setState({server: server})
+        this.newStandardDeviationList.setState({server: server})
     }
 
     newStandardDeviation(standardDeviation) {
