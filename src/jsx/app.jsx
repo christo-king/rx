@@ -97,13 +97,9 @@ export class NewStdDevForm extends React.Component {
         try {
             let points = self.getPointsList(this.state.value).filter(self.isNumeric).map(parseFloat)
             let postdata = JSON.stringify({points: points})
-
             var request = new Request('http://' + this.state.server + '/standardDeviation', {
                 method: 'POST',
                 mode: 'cors',
-                headers: new Headers({
-                    'Content-Type': 'application/json'
-                }),
                 body: postdata
             });
             fetch(request).then((response) => {
@@ -181,11 +177,11 @@ export default class App extends React.Component {
 
     refreshList() {
         let self = this;
-        fetch('http://' + this.state.server + '/standardDeviation').then((standardDeviations) => standardDeviations.json()).then((standardDeviations) => {
+        fetch('http://' + this.state.server + '/standardDeviation').then((sds) => sds.json()).then((sds) => {
             self.setState({
-                standardDeviations: standardDeviations
+                standardDeviations: sds
             });
-            self.standardDeviationList.setState({standardDeviations: standardDeviations})
+            self.standardDeviationList.setState({standardDeviations: sds})
         });
     }
 

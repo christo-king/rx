@@ -16,7 +16,12 @@ class StandardDeviationTbl < ActiveRecord::Base
 end
 
 before do
-  headers 'Access-Control-Allow-Origin' => 'http://localhost:3000'
+  if request.request_method == 'OPTIONS'
+    response.headers["Access-Control-Allow-Origin"] = "http://localhost:3000"
+    response.headers["Access-Control-Allow-Methods"] = "POST"
+
+    halt 200
+  end
 end
 
 get '/standardDeviation' do
@@ -29,8 +34,12 @@ get '/standardDeviation' do
 end
 
 get '/standardDeviation/:id' do |id|
-  content_type :json
-  db_decode_stddev(StandardDeviationTbl.find(id)).to_json
+  begin
+    content_type :json
+    db_decode_stddev(StandardDeviationTbl.find(id)).to_json
+  rescue ActiveRecord::RecordNotFound
+    send_not_found
+  end
 end
 
 post '/standardDeviation' do
@@ -48,5 +57,10 @@ post '/standardDeviation' do
 end
 
 def db_decode_stddev(stddev)
-  {:id => stddev.id, :answer => stddev.answer, :points => JSON.parse(stddev.input_data)}
+  pointsstr = stddev.input_data.presence || '{"points":[]}'
+  {:id => stddev.id, :answer => stddev.answer, :points => JSON.parse(pointsstr)}
+end
+
+def send_not_found
+  request.status 404
 end
