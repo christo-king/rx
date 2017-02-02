@@ -31,7 +31,7 @@ export class ListStdDevs extends React.Component {
     render() {
         return (
             <div>
-                <Panel collapsible defaultCollapsed header="Existing Standard Deviations List">
+                <Panel collapsible defaultExpanded header="Existing Standard Deviations List">
                     <Grid>
                         <Row className="show-grid">
                             <Col xs={1} md={1}><h3>ID</h3></Col>
