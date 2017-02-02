@@ -25,7 +25,7 @@ export class AppHeader extends React.Component {
 export class ListStdDevs extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {standardDeviations: props.standardDeviations}
+        this.state = {server: props.server, standardDeviations: props.standardDeviations}
     }
 
     render() {
@@ -58,7 +58,13 @@ export class NewStdDevForm extends React.Component {
 
     constructor(props) {
         super(props)
-        this.state = {value: '', validationState: '', valid: true, listener: props.newStandardDeviationListener}
+        this.state = {
+            server: props.server,
+            value: '',
+            validationState: '',
+            valid: true,
+            listener: props.newStandardDeviationListener
+        }
         this.validation = {valid: true, message: ""}
     }
 
@@ -135,10 +141,37 @@ export class NewStdDevForm extends React.Component {
     }
 }
 
+export class ServerChoice extends React.Component {
+
+    constructor(props) {
+        super(props)
+        this.state = {server: 'localhost:3000', listener: props.serverChangeListener}
+    }
+
+    handleServerChange(e) {
+        this.setState({server: e.target.value})
+        if (this.state.listener) {
+            this.state.listener(this.state.server);
+        }
+    }
+
+    render() {
+        return (
+            <FormGroup controlId="formControlsSelectMultiple">
+                <ControlLabel>Select Server</ControlLabel>
+                <FormControl componentClass="select" onChange={(e) => this.handleServerChange(e)}>
+                    <option value="localhost:3000">Go</option>
+                    <option value="localhost:3002">Ruby</option>
+                </FormControl>
+            </FormGroup>
+        )
+    }
+}
+
 export default class App extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {standardDeviations: []}
+        this.state = {server: 'localhost:3000', standardDeviations: []}
     }
 
     componentDidMount() {
@@ -147,12 +180,16 @@ export default class App extends React.Component {
 
     refreshList() {
         let self = this;
-        fetch('standardDeviation').then((standardDeviations) => standardDeviations.json()).then((standardDeviations) => {
+        fetch('http://' + this.state.server + '/standardDeviation').then((standardDeviations) => standardDeviations.json()).then((standardDeviations) => {
             self.setState({
                 standardDeviations: standardDeviations
             });
             self.standardDeviationList.setState({standardDeviations: standardDeviations})
         });
+    }
+
+    serverChanged(server) {
+        this.setState({server: server})
     }
 
     newStandardDeviation(standardDeviation) {
@@ -165,8 +202,11 @@ export default class App extends React.Component {
     render() {
         return (<div>
             <AppHeader/>
-            <NewStdDevForm newStandardDeviationListener={this.newStandardDeviation.bind(this)}/>
-            <ListStdDevs standardDeviations={[]}
+            <ServerChoice serverChangeListener={this.serverChanged.bind(this)}/>
+            <NewStdDevForm newStandardDeviationListener={this.newStandardDeviation.bind(this)}
+                           server={this.state.server}
+                           ref={(r) => this.newStandardDeviationList = r}/>
+            <ListStdDevs standardDeviations={[]} server={this.state.server}
                          ref={(r) => this.standardDeviationList = r}/>
         </div>);
     }
