@@ -116,7 +116,7 @@ export class NewStdDevForm extends React.Component {
     }
 
     render() {
-        return (<div className="std-dev-input-form">
+        return (
             <form>
                 <FormGroup controlId="formBasicText" validationState={this.handleValidation()}>
                     <ControlLabel>Enter a list of numbers</ControlLabel>
@@ -133,7 +133,7 @@ export class NewStdDevForm extends React.Component {
                         Deviation</Button>
                 </ButtonToolbar>
             </form>
-        </div>)
+        )
     }
 }
 
@@ -201,10 +201,12 @@ export default class App extends React.Component {
     render() {
         return (<div>
             <AppHeader/>
-            <ServerChoice serverChangeListener={this.serverChanged.bind(this)}/>
-            <NewStdDevForm newStandardDeviationListener={this.newStandardDeviation.bind(this)}
-                           server={this.state.server}
-                           ref={(r) => this.newStandardDeviationList = r}/>
+            <div className="std-dev-input-form">
+                <ServerChoice serverChangeListener={this.serverChanged.bind(this)}/>
+                <NewStdDevForm newStandardDeviationListener={this.newStandardDeviation.bind(this)}
+                               server={this.state.server}
+                               ref={(r) => this.newStandardDeviationList = r}/>
+            </div>
             <ListStdDevs standardDeviations={[]} server={this.state.server}
                          ref={(r) => this.standardDeviationList = r}/>
         </div>);

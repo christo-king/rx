@@ -17,8 +17,13 @@ This project was built with the following technologies, which are therefore also
 - [React.js](link:https://facebook.github.io/react/)
 - [React-Bootstrap](link:https://react-bootstrap.github.io/)
 - [Postman](link:https://www.getpostman.com/)
+- [Ruby](link:https://www.ruby-lang.org/)
+- [Sinatra](link:http://www.sinatrarb.com/)
 
-To make full use of this project, you will need to have these installed.  Minimally, a recent, native, version of Docker (which includes the docker-compose command line utility), a working command-line Go SDK (only for 'go get' library retrieval), and npm will nbe necessary to run the environment.
+To make full use of this project, you will need to, at minimum, have the following installed:
+ - recent, native (non-native could work, but is untested), version of Docker (which includes the docker-compose command line utility)
+ - Go SDK (for 'go get' package management)
+ - npm 
 
 ###Instructions for Usage
 After checking out this project, you will have to start a docker-compose instance of the Go server (Gin) and start up webpack.  These will provide you with a base running environment which you can then work with.
@@ -42,6 +47,8 @@ Once you've completed the above, you shoul dhave a running environment.  You wil
 ![Screenshot][screenshot]
 
 Also provided is a small series of [Postman](link:https://www.getpostman.com/) tests for the web services (/RX.postman.json).
+
+Web services are written in both Go (using gorilla) and Ruby (using sinatra).  The drop-down "Server" can choose which is used to submit new standard deviations, but all go to the same database.  In the future, the list of existing will also come from the selected server.
 
 ###Future Additions
 Future additions will likely include more extensive client-side unit testing and BDD-style tests in Ruby-Cucumber.
