@@ -1,7 +1,4 @@
-$backContrast : lightblue;
-
-.app {
-  @import '_app.scss';
-}
+@import '_globals.scss';
+@import '_app.scss';
 
 

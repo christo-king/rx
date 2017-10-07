@@ -1,9 +1,9 @@
 import React from 'react'
 import AppHeader from './header'
-// import ServerList from './server-list'
+import ServerList from './server-list'
 // import NewStdDevForm from './stddev'
 // import ListStdDevs from './stddev-list'
-
+import './style/main.scss'
 
 class App extends React.Component {
     constructor(props) {
@@ -27,7 +27,7 @@ class App extends React.Component {
     }
 
     render() {
-        return (<div>
+        return (<div className="app">
             <AppHeader/>
             {/*<div className="std-dev-input-form">*/}
                 {/*<ServerList serverChangeListener={this.serverChanged.bind(this)}/>*/}
