@@ -5,7 +5,7 @@ import {Table} from 'react-materialize';
 export class StandardDeviationList extends React.Component {
     render() {
         return (
-            <Table>
+            <Table className="stddev-list-container">
                 <thead>
                 <th>Created</th>
                 <th>Standard Deviation</th>

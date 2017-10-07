@@ -1,0 +1,10 @@
+table.stddev-list-container {
+  tbody {
+    tr:nth-child(odd) {
+      background-color: lightgrey;
+    }
+    tr:hover {
+      background-color: darken(lightgrey, 20%);
+    }
+  }
+}
