@@ -1,9 +1,9 @@
 package main
 
 import (
-	"net/http"
 	"errors"
 	"log"
+	"net/http"
 )
 
 var httpError = http.Error
@@ -32,7 +32,7 @@ func (h HttpResponse) LogError() error {
 	return h.logError
 }
 
-type ErrorHandledFunc func(w http.ResponseWriter, r *http.Request) HttpError;
+type ErrorHandledFunc func(w http.ResponseWriter, r *http.Request) HttpError
 
 type HttpErrorHandler struct {
 	wrapped ErrorHandledFunc
@@ -40,11 +40,11 @@ type HttpErrorHandler struct {
 
 func (h *HttpErrorHandler) HandleHttpErrors(w http.ResponseWriter, r *http.Request) {
 	hr := h.wrapped(w, r)
-	if ( hr.Code() > 299 || hr.Code() < 200 ) {
+	if hr.Code() > 299 || hr.Code() < 200 {
 		httpError(w, hr.Error(), hr.Code())
 	}
 	logError := hr.LogError()
-	if ( logError != nil ) {
+	if logError != nil {
 		log.Fatal("Error ", hr.Code(), ": ", hr.Error(), ": ", hr.LogError())
 	}
 }

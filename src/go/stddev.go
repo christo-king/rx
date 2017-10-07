@@ -5,24 +5,24 @@ import (
 )
 
 func calcStdDev(points []float64) float64 {
-	var mean = calcMean(points);
+	var mean = calcMean(points)
 	devsquares := make([]float64, len(points))
 	copy(devsquares, points)
-	for index, devsquare := range (devsquares) {
-		devsquares[index] = math.Pow((devsquare - mean), 2);
+	for index, devsquare := range devsquares {
+		devsquares[index] = math.Pow((devsquare - mean), 2)
 	}
-	deviatedmean := calcMean(devsquares);
-	stddev := math.Sqrt(deviatedmean);
+	deviatedmean := calcMean(devsquares)
+	stddev := math.Sqrt(deviatedmean)
 	// TODO: fix this later to accommodate significant digits
-	return round(stddev, 0.5, 1);
+	return round(stddev, 0.5, 1)
 }
 
 func calcMean(points []float64) float64 {
 	var sum float64 = 0.0
-	for _, point := range (points) {
+	for _, point := range points {
 		sum += point
 	}
-	return sum / float64(len(points));
+	return sum / float64(len(points))
 }
 
 // from https://play.golang.org/p/KNhgeuU5sT

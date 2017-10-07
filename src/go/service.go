@@ -1,8 +1,8 @@
 package main
 
 import (
-	"net/http"
 	"github.com/gorilla/mux"
+	"net/http"
 	"os"
 )
 
@@ -29,5 +29,5 @@ func main() {
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("/static/")))
 
 	srv := http.Server{Addr: Config.Host, Handler: router}
-	srv.ListenAndServe();
+	srv.ListenAndServe()
 }

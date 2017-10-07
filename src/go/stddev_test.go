@@ -10,14 +10,14 @@ var stddevTests = []struct {
 	answer float64
 }{
 	{[]float64{5, 10, 10, 10, 15}, 3.2},
-	{[]float64{11, 12, 15, 14, 13, 14}, 1.3 },
+	{[]float64{11, 12, 15, 14, 13, 14}, 1.3},
 }
 
 func TestCalcStdDev(t *testing.T) {
-	for _, test := range (stddevTests) {
+	for _, test := range stddevTests {
 		var res float64 = calcStdDev(test.points)
 		if res != test.answer {
-			t.Error("Standard Deviation ", res, " != expected ", test.answer);
+			t.Error("Standard Deviation ", res, " != expected ", test.answer)
 		}
 	}
 }
@@ -32,10 +32,10 @@ var meanTests = []struct {
 }
 
 func TestCalcMean(t *testing.T) {
-	for _, test := range (meanTests) {
+	for _, test := range meanTests {
 		var res float64 = calcMean(test.points)
 		if res != test.answer {
-			t.Error("Value ", res, " != expected ", test.answer);
+			t.Error("Value ", res, " != expected ", test.answer)
 		}
 	}
 }
@@ -53,10 +53,10 @@ var roundTests = []struct {
 }
 
 func TestRound(t *testing.T) {
-	for _, test := range (roundTests) {
+	for _, test := range roundTests {
 		var res float64 = round(test.input, 0.5, 1)
 		if res != test.result {
-			t.Error("Value ", res, " != expected ", test.result);
+			t.Error("Value ", res, " != expected ", test.result)
 		}
 	}
 }

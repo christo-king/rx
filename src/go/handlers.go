@@ -1,11 +1,11 @@
 package main
 
 import (
-	"net/http"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
-	"fmt"
+	"net/http"
 )
 
 func HandleListStandardDeviations(w http.ResponseWriter, r *http.Request) HttpError {
@@ -23,15 +23,15 @@ func HandleListStandardDeviations(w http.ResponseWriter, r *http.Request) HttpEr
 func HandleGetStandardDeviation(w http.ResponseWriter, r *http.Request) HttpError {
 	//vars := mux.Vars(r)
 	geterr := HttpOK()
-	strout, jsonerr := json.Marshal([]StandardDeviation{});
-	if (jsonerr != nil) {
+	strout, jsonerr := json.Marshal([]StandardDeviation{})
+	if jsonerr != nil {
 		geterr = NewLogHttpError(500, "Unable to serialize standard deviation", jsonerr)
 	} else {
 		w.Write(strout)
 	}
 	log.Print(strout)
-	w.Write(strout);
-	return geterr;
+	w.Write(strout)
+	return geterr
 }
 
 func HandlePostStandardDeviation(w http.ResponseWriter, r *http.Request) HttpError {

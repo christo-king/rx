@@ -1,31 +1,25 @@
-var path = require('path');
-
-var PROD = JSON.parse(process.env.PROD_ENV || '0');
-var BUILD_DIR = path.resolve(__dirname, 'src/static/');
-var JSX_DIR = path.resolve(__dirname, 'src/jsx');
-var glob = require("glob");
-
-var config = {
-    entry: glob.sync(JSX_DIR + '**/*.jsx'),
-    output: {
-        path: BUILD_DIR,
-        filename: 'bundle.js'
+module.exports = {
+    "context": __dirname,
+    "entry": "./src/jsx/index.js",
+    "output": {
+        "path": __dirname + "/src/static/",
+        "filename": "bundle.js"
     },
     module: {
         loaders: [
             {
-                test: /\.jsx/,
-                include: JSX_DIR,
+                test: /.js?$/,
                 loader: 'babel-loader',
+                exclude: /node_modules/,
                 query: {
                     presets: ['es2015', 'react']
                 }
+            },
+            {
+                test: /.scss$/,
+                exclude: /node_modules/,
+                loaders: ["style-loader", "css-loader", "sass-loader"]
             }
         ]
-    }
+    },
 };
-
-module.exports = config;
-
-var path = require('path');
-var webpack = require('webpack');
