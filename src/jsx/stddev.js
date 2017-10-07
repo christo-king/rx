@@ -43,15 +43,19 @@ export class StandardDeviation extends React.Component {
 
     render() {
         return (
-            <Row>
-                <Input
-                    type="text"
-                    placeholder="Example: 28.232 28.442 187.644 38.1 192.0 37"
-                    onChange={(e) => this.handleChange(e)}
-                />
-                <Button disabled={!this.isValid()} onClick={(e) => this.save(e)}>Add Standard
-                    Deviation</Button>
-            </Row>
+            <div className="container">
+                <Row>
+                    <Input
+                        type="text"
+                        placeholder="Example: 28.232 28.442 187.644 38.1 192.0 37"
+                        onChange={(e) => this.handleChange(e)}
+                    />
+                </Row>
+                <Row>
+                    <Button disabled={!this.isValid()} onClick={(e) => this.save(e)}>Add Standard
+                        Deviation</Button>
+                </Row>
+            </div>
         )
     }
 }

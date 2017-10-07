@@ -5,7 +5,7 @@ import service from './services';
 import AppHeader from './header'
 import ServerList from './server-list'
 import StandardDeviation from './stddev'
-// import ListStdDevs from './stddev-list'
+import StandardDeviationList from './stddev-list'
 import './style/main.scss'
 
 class App extends React.Component {
@@ -36,17 +36,18 @@ class App extends React.Component {
     }
 
     render() {
-        return (<div className="container">
+        return (<div className="container center content-container">
                 <Row>
                     <AppHeader/>
                 </Row>
                 <Row>
                     <ServerList listener={this.serverChanged.bind(this)}/>
-                    <StandardDeviation listener={this.saveStandardDeviation.bind(this)}
-                                       server={this.state.server} />
                 </Row>
-                {/*<ListStdDevs standardDeviations={[]} server={this.state.server}*/}
-                {/*ref={(r) => this.standardDeviationList = r}/>*/}
+                <Row>
+                    <StandardDeviation listener={this.saveStandardDeviation.bind(this)}
+                                       server={this.state.server}/>
+                </Row>
+                <StandardDeviationList standardDeviations={this.state.standardDeviations}/>
             </div>
         );
     }
