@@ -1,18 +1,13 @@
-import React from "react"
+import React from "react";
+import {Button, Input, Row} from 'react-materialize';
 
+module.exports = StandardDeviation;
 
-export class NewStdDevForm extends React.Component {
+export class StandardDeviation extends React.Component {
 
     constructor(props) {
         super(props)
-        this.state = {
-            server: props.server,
-            value: '',
-            validationState: '',
-            valid: true,
-            listener: props.newStandardDeviationListener
-        }
-        this.validation = {valid: true, message: ""}
+        this.state = {value: ""}
     }
 
     handleChange(e) {
@@ -23,63 +18,38 @@ export class NewStdDevForm extends React.Component {
         return !isNaN(parseFloat(n)) && isFinite(n);
     }
 
-    getPointsList(value) {
-        return value.replace(new RegExp(',', 'g'), '').split(" ")
+    isValid() {
+        return this.parse(this.state.value) ? true : false;
     }
 
-    handleValidation() {
-        let invalids = this.getPointsList(this.state.value).filter(isNaN)
-        if (invalids.length > 0) {
-            this.validation.valid = false
-            console.log("invalid");
-            return "error"
+    save() {
+        if (this.isValid()) {
+            (this.props.listener || console.log)(this.parse(this.state.value));
         }
-        this.validation.valid = true
-        return "success"
     }
 
-    handleSubmit(e) {
-        e.preventDefault()
-        let self = this
+    parse(numbers) {
         try {
-            let points = self.getPointsList(this.state.value).filter(self.isNumeric).map(parseFloat)
-            let postdata = JSON.stringify({points: points})
-            var request = new Request('http://' + this.state.server + '/standardDeviation', {
-                method: 'POST',
-                mode: 'cors',
-                body: postdata
-            });
-            fetch(request).then((response) => {
-                return response.json();
-            }).then((newStandardDeviation) => {
-                self.setState({value: ''})
-                if (self.state.listener) {
-                    self.state.listener(newStandardDeviation)
-                }
-            });
+            return self.getPointsList(this.state.value)
+                .filter(self.isNumeric)
+                .map(parseFloat);
         } catch (e) {
-
+            console.debug(e);
         }
+        return null;
     }
 
     render() {
         return (
-            <form>
-                <FormGroup controlId="formBasicText" validationState={this.handleValidation()}>
-                    <ControlLabel>Enter a list of numbers</ControlLabel>
-                    <FormControl
-                        type="text"
-                        value={this.state.value}
-                        placeholder="Example: 28.232 28.442 187.644 38.1 192.0 37"
-                        onChange={(e) => this.handleChange(e)}
-                    />
-                    <FormControl.Feedback />
-                </FormGroup>
-                <ButtonToolbar>
-                    <Button disabled={!this.validation.valid} onClick={(e) => this.handleSubmit(e)}>Add Standard
-                        Deviation</Button>
-                </ButtonToolbar>
-            </form>
+            <Row>
+                <Input
+                    type="text"
+                    placeholder="Example: 28.232 28.442 187.644 38.1 192.0 37"
+                    onChange={(e) => this.handleChange(e)}
+                />
+                <Button disabled={!this.isValid()} onClick={(e) => this.save(e)}>Add Standard
+                    Deviation</Button>
+            </Row>
         )
     }
 }

@@ -1,30 +1,20 @@
-
 import React from "react";
+import {Input} from 'react-materialize';
 
 export class ServerList extends React.Component {
 
-    constructor(props) {
-        super(props)
-        this.state = {server: 'localhost:3000', listener: props.serverChangeListener}
-    }
-
     handleServerChange(e) {
-        console.log(e.target.value);
-        this.setState({server: e.target.value})
-        if (this.state.listener) {
-            this.state.listener(e.target.value);
-        }
+        (this.props.listener || console.log)(e.target.value);
     }
 
     render() {
         return (
-            <FormGroup controlId="formControlsSelectMultiple">
-                <ControlLabel>Select Server</ControlLabel>
-                <FormControl componentClass="select" onChange={(e) => this.handleServerChange(e)}>
+            <div className="container">
+                <Input type="select" onChange={(e) => this.handleServerChange(e)}>
                     <option value="localhost:3000">Go</option>
                     <option value="localhost:3002">Ruby</option>
-                </FormControl>
-            </FormGroup>
+                </Input>
+            </div>
         )
     }
 }

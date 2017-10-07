@@ -1,7 +1,10 @@
 import React from 'react'
+import {Row} from 'react-materialize';
+
+import service from './services';
 import AppHeader from './header'
 import ServerList from './server-list'
-// import NewStdDevForm from './stddev'
+import StandardDeviation from './stddev'
 // import ListStdDevs from './stddev-list'
 import './style/main.scss'
 
@@ -13,9 +16,8 @@ class App extends React.Component {
     }
 
     refetch() {
-        let self = this;
-        fetch('http://' + this.state.server + '/standardDeviation').then((sds) => sds.json()).then((sds) => {
-            self.setState({
+        service.listStandardDeviations().then(sds => {
+            this.setState({
                 standardDeviations: sds || []
             });
         });
@@ -26,18 +28,27 @@ class App extends React.Component {
         this.refetch()
     }
 
+    saveStandardDeviation(numberList) {
+        services.saveStandardDeviation(numberList).then(sd => {
+            this.refetch();
+        })
+    }
+
     render() {
-        return (<div className="app">
-            <AppHeader/>
-            {/*<div className="std-dev-input-form">*/}
-                {/*<ServerList serverChangeListener={this.serverChanged.bind(this)}/>*/}
-                {/*<NewStdDevForm newStandardDeviationListener={this.newStandardDeviation.bind(this)}*/}
-                               {/*server={this.state.server}*/}
-                               {/*ref={(r) => this.newStandardDeviationList = r}/>*/}
-            {/*</div>*/}
-            {/*<ListStdDevs standardDeviations={[]} server={this.state.server}*/}
-                         {/*ref={(r) => this.standardDeviationList = r}/>*/}
-        </div>);
+        return (<div className="container">
+                <Row>
+                    <AppHeader/>
+                </Row>
+                <Row>
+                    <ServerList listener={this.serverChanged.bind(this)}/>
+                    <StandardDeviation listener={this.saveStandardDeviation.bind(this)}
+                                       server={this.state.server}
+                                       ref={(r) => this.newStandardDeviationList = r}/>
+                </Row>
+                {/*<ListStdDevs standardDeviations={[]} server={this.state.server}*/}
+                {/*ref={(r) => this.standardDeviationList = r}/>*/}
+            </div>
+        );
     }
 }
 
