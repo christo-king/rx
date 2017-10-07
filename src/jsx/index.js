@@ -1,6 +1,5 @@
 import React from 'react';
 import './app'
-import './header'
 import './server-list'
 import './services'
 import './stddev'

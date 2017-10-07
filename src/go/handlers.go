@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 )
 
 func HandleListStandardDeviations(w http.ResponseWriter, r *http.Request) HttpError {
@@ -49,6 +50,7 @@ func HandlePostStandardDeviation(w http.ResponseWriter, r *http.Request) HttpErr
 		return NewLogHttpError(400, "Unable to decode standard deviation", err)
 	}
 	sd.Answer = calcStdDev(sd.Points)
+	sd.Created = time.Now()
 	success, err := save(&sd)
 	log.Println(fmt.Sprintf(" something %+v", sd.Id))
 
