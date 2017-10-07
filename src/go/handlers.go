@@ -16,25 +16,19 @@ type StandardDeviationPoints struct {
 
 type StandardDeviation struct {
 	StandardDeviationPoints
-	Id    bson.ObjectId `json:"id",bson:"_id,"`
+	Id     bson.ObjectId `json:"id",bson:"_id,"`
 	Answer float64       `json:"answer"`
 }
 
 func HandleListStandardDeviations(w http.ResponseWriter, r *http.Request) HttpError {
 	listerr := HttpOK()
-	var sdlist []StandardDeviation = []StandardDeviation{}
 
-	if listerr.code != 200 {
-		return listerr
-	}
-	strout, jsonerr := json.Marshal(sdlist)
-	w.Write(strout)
-	if ( jsonerr != nil ) {
-		listerr = NewLogHttpError(500, "Invalid standard deviation result", jsonerr)
-	} else {
-		w.Write(strout);
-	}
+	sdlist, err := list()
 
+	if err != nil {
+		return NewLogHttpError(500, "Unable to list standard deviations", err)
+	}
+	json.NewEncoder(w).Encode(sdlist)
 	return listerr
 }
 
@@ -76,6 +70,16 @@ func HandlePostStandardDeviation(w http.ResponseWriter, r *http.Request) HttpErr
 	}
 
 	return posterr
+}
+
+func list() ([]StandardDeviation, error) {
+	session, err := getDb()
+	var sds []StandardDeviation = nil
+	if err == nil {
+		err = session.DB(Config.DatabaseName).C("standardDeviation").Find(nil).All(&sds)
+	}
+	defer session.Close()
+	return sds, err
 }
 func save(sd *StandardDeviation) (bool, error) {
 	success := false
