@@ -10,7 +10,8 @@ services:
     image: ntboes/golang-gin
     working_dir: /
     environment:
-      - DB_MONGO=rxmg:27017
+      - DB_NAME=stddev
+      - DB_MONGO=rxmg
       - HOST=127.0.0.1:3001
     command:
       - -a

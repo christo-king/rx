@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	"gopkg.in/mgo.v2"
 )
 
 type StandardDeviationPoints struct {
@@ -31,6 +32,7 @@ func HandleListStandardDeviations(w http.ResponseWriter, r *http.Request) HttpEr
 	} else {
 		w.Write(strout);
 	}
+
 	return listerr
 }
 
@@ -52,20 +54,36 @@ func HandlePostStandardDeviation(w http.ResponseWriter, r *http.Request) HttpErr
 	posterr := HttpOK()
 
 	var bodybytes, strerr = ioutil.ReadAll(r.Body)
-	if ( strerr != nil ) {
+	if strerr != nil {
 		posterr = NewLogHttpError(400, "Invalid standard deviation body", strerr)
 		return posterr
 	}
 
 	var sd StandardDeviation
 	jerr := json.Unmarshal(bodybytes, &sd)
-	if ( jerr != nil ) {
+	if jerr != nil {
 		posterr = NewLogHttpError(400, "Unable to decode standard deviation", jerr)
 		return posterr
 	}
 	sd.Answer = calcStdDev(sd.Points)
-
+	stddev, err := getDb("standardDeviation")
+	if err != nil {
+		return NewLogHttpError(500, "Unable to connect to database", err)
+	} else {
+		stddev.Insert(sd)
+	}
 	json.NewEncoder(w).Encode(sd)
 
 	return posterr
+}
+
+func getDb(collection string) (*mgo.Collection, error) {
+	log.Println(Config.DatabaseUrl)
+	sess, err := mgo.Dial(Config.DatabaseUrl)
+	if err != nil {
+		log.Print(err)
+		return nil, err
+	}
+	defer sess.Close()
+	return sess.DB(Config.DatabaseName).C(collection), nil
 }

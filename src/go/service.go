@@ -7,11 +7,13 @@ import (
 )
 
 var Config = struct {
-	Host        string
-	DatabaseUrl string
+	Host         string
+	DatabaseUrl  string
+	DatabaseName string
 }{
-	Host:        os.Getenv("HOST"),
-	DatabaseUrl: os.Getenv("MONGO_DB"),
+	Host:         os.Getenv("HOST"),
+	DatabaseUrl:  os.Getenv("DB_MONGO"),
+	DatabaseName: os.Getenv("DB_NAME"),
 }
 
 func main() {
