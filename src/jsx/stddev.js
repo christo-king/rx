@@ -1,7 +1,7 @@
 import React from "react";
-import {Button, Input, Row} from 'react-materialize';
+import {Button, Input} from 'react-materialize';
 
-module.exports = StandardDeviation;
+import './style/_stddev.scss'
 
 export class StandardDeviation extends React.Component {
 
@@ -43,11 +43,14 @@ export class StandardDeviation extends React.Component {
 
     render() {
         return (
-            <Row>
-                <Input type="text" placeholder="Example: 28.232 28.442 187.644"
-                       onChange={(e) => this.handleChange(e)}/>
-                <Button disabled={!this.isValid()} onClick={e => this.save(e)}>Add</Button>
-            </Row>);
+            <div className="stddev-container center">
+                <div className="controls-container center">
+                    <Input className="center" label="Data Points" type="text"
+                           placeholder="Example: 28.232 28.442 187.644"
+                           onChange={(e) => this.handleChange(e)}/>
+                    <Button disabled={!this.isValid()} onClick={e => this.save(e)}>Add</Button>
+                </div>
+            </div>);
     }
 }
 

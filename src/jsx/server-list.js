@@ -9,13 +9,10 @@ export class ServerList extends React.Component {
 
     render() {
         return (
-            <div className="container">
-                <Input type="select" onChange={(e) => this.handleServerChange(e)}>
-                    <option value="localhost:3000">Go</option>
-                    <option value="localhost:3002">Ruby</option>
-                </Input>
-            </div>
-        )
+            <Input label="Choose a Server Implementation" type="select" onChange={(e) => this.handleServerChange(e)}>
+                <option value="localhost:3000">Go</option>
+                <option value="localhost:3002">Ruby</option>
+            </Input>);
     }
 }
 

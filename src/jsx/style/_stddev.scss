@@ -1,0 +1,16 @@
+.stddev-container {
+  width: 95%;
+  vertical-align: top;
+  padding: 8px;
+  margin: 4px;
+
+  .controls-container {
+    max-width: 320px;
+    div {
+      width: 95%;
+    }
+    button {
+      width: 95%;
+    }
+  }
+}

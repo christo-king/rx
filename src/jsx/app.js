@@ -35,11 +35,9 @@ class App extends React.Component {
 
     render() {
         return (<div className="container center content-container">
-            <Row>
-                <h1 className="header center">Standard Deviations</h1>
-            </Row>
-            <Row>
-                <ServerList listener={this.serverChanged.bind(this)}/>
+            <Row className="header center">
+                <h1 className="center-align">Standard Deviations</h1>
+                <ServerList className="right-align" listener={this.serverChanged.bind(this)}/>
             </Row>
             <Row>
                 <StandardDeviation listener={this.saveStandardDeviation.bind(this)}
