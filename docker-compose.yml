@@ -1,23 +1,17 @@
 version: '2'
 services:
-
-  rxdb:
-    container_name: rxdb
-    image: percona:5.6
-    environment:
-        - MYSQL_ROOT_PASSWORD=test1
-        - MYSQL_DATABASE=testing
-        - MYSQL_PASSWORD=test1
-        - MYSQL_USER=test_user
+  rxmg:
+    image: mongo
     ports:
-        - 3306:3306
-    volumes:
-        - ./docker/db-init:/docker-entrypoint-initdb.d
+      - 27017:27017
 
   gosrv:
     container_name: gosrv
     image: ntboes/golang-gin
     working_dir: /
+    environment:
+      - DB_MONGO=rxmg:27017
+      - HOST=127.0.0.1:3001
     command:
       - -a
       - "3001"
@@ -29,17 +23,4 @@ services:
     ports:
       - 3000:3000
     links:
-      - rxdb
-
-  rubysrv:
-    container_name: rubysrv
-    image: erikap/ruby-sinatra
-    environment:
-      - MAIN_APP_FILE=services.rb
-      - RACK_ENV=development
-    volumes:
-      - ./src/ruby/:/usr/src/app
-    ports:
-        - 3002:80
-    links:
-      - rxdb
+      - rxmg
