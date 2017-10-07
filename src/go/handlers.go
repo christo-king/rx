@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"log"
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
+	"fmt"
 )
 
 type StandardDeviationPoints struct {
@@ -14,8 +16,8 @@ type StandardDeviationPoints struct {
 
 type StandardDeviation struct {
 	StandardDeviationPoints
-	Id     int64   `json:"id"`
-	Answer float64 `json:"answer"`
+	Id    bson.ObjectId `json:"id",bson:"_id,"`
+	Answer float64       `json:"answer"`
 }
 
 func HandleListStandardDeviations(w http.ResponseWriter, r *http.Request) HttpError {
@@ -53,37 +55,46 @@ func HandleGetStandardDeviation(w http.ResponseWriter, r *http.Request) HttpErro
 func HandlePostStandardDeviation(w http.ResponseWriter, r *http.Request) HttpError {
 	posterr := HttpOK()
 
-	var bodybytes, strerr = ioutil.ReadAll(r.Body)
-	if strerr != nil {
-		posterr = NewLogHttpError(400, "Invalid standard deviation body", strerr)
-		return posterr
+	var bodybytes, err = ioutil.ReadAll(r.Body)
+	if err != nil {
+		return NewLogHttpError(400, "Invalid standard deviation body", err)
 	}
 
 	var sd StandardDeviation
-	jerr := json.Unmarshal(bodybytes, &sd)
-	if jerr != nil {
-		posterr = NewLogHttpError(400, "Unable to decode standard deviation", jerr)
-		return posterr
+	err = json.Unmarshal(bodybytes, &sd)
+	if err != nil {
+		return NewLogHttpError(400, "Unable to decode standard deviation", err)
 	}
 	sd.Answer = calcStdDev(sd.Points)
-	stddev, err := getDb("standardDeviation")
-	if err != nil {
-		return NewLogHttpError(500, "Unable to connect to database", err)
+	success, err := save(&sd)
+	log.Println(fmt.Sprintf(" something %+v", sd.Id))
+
+	if success {
+		json.NewEncoder(w).Encode(sd)
 	} else {
-		stddev.Insert(sd)
+		posterr = NewLogHttpError(500, "Unable to save standard deviation", err)
 	}
-	json.NewEncoder(w).Encode(sd)
 
 	return posterr
 }
+func save(sd *StandardDeviation) (bool, error) {
+	success := false
+	session, err := getDb()
+	if err == nil {
+		id := bson.NewObjectId()
+		sd.Id = id
+		session.DB(Config.DatabaseName).C("standardDeviation").Insert(sd)
+		success = true
+	}
+	defer session.Close()
+	return success, nil
+}
 
-func getDb(collection string) (*mgo.Collection, error) {
-	log.Println(Config.DatabaseUrl)
+func getDb() (*mgo.Session, error) {
 	sess, err := mgo.Dial(Config.DatabaseUrl)
 	if err != nil {
 		log.Print(err)
 		return nil, err
 	}
-	defer sess.Close()
-	return sess.DB(Config.DatabaseName).C(collection), nil
+	return sess, nil
 }
