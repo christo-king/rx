@@ -43,7 +43,9 @@ class App extends React.Component {
                 <StandardDeviation listener={this.saveStandardDeviation.bind(this)}
                                    server={this.state.server}/>
             </Row>
-            <StandardDeviationList standardDeviations={this.state.standardDeviations}/>
+            <Row>
+                <StandardDeviationList standardDeviations={this.state.standardDeviations}/>
+            </Row>
         </div>);
     }
 }

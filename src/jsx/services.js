@@ -1,5 +1,7 @@
 import fetch from 'isomorphic-fetch';
 
+//import {connect} from 'react-redux';
+
 
 class Services {
     listStandardDeviations() {
