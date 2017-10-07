@@ -1,4 +1,10 @@
-.header {
+.container {
   background-color: $backContrast;
+  width: 100%;
+
+  .header {
+    padding: 15px;
+    margin: 15px;
+  }
 }
 
