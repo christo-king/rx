@@ -5,6 +5,9 @@ import (
 )
 
 func calcStdDev(points []float64) float64 {
+	if points == nil || len(points) < 1 {
+		return 0;
+	}
 	var mean = calcMean(points)
 	devsquares := make([]float64, len(points))
 	copy(devsquares, points)

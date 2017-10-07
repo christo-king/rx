@@ -7,12 +7,21 @@ class Services {
     }
 
     saveStandardDeviation(numbers) {
+        let body = JSON.stringify({points: numbers});
         var request = new Request('/standardDeviation', {
             method: 'POST',
             mode: 'cors',
-            body: numbers
+            body: body
         });
-        return fetch(request).then(response => response.json());
+        return fetch(request).then(response => this.shapeResponse(response));
+    }
+
+    shapeResponse(response) {
+        if (response.status >= 400) {
+            throw "Server error";
+        } else {
+            return response.json();
+        }
     }
 }
 

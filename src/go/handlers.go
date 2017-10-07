@@ -16,6 +16,7 @@ func HandleListStandardDeviations(w http.ResponseWriter, r *http.Request) HttpEr
 	if err != nil {
 		return NewLogHttpError(500, "Unable to list standard deviations", err)
 	}
+	log.Println(fmt.Sprintf("DEVS: %v", sdlist))
 	json.NewEncoder(w).Encode(sdlist)
 	return listerr
 }

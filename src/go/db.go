@@ -8,11 +8,14 @@ import (
 
 func list() ([]StandardDeviation, error) {
 	session, err := getDb()
+	defer session.Close()
 	var sds []StandardDeviation = nil
 	if err == nil {
 		err = session.DB(Config.DatabaseName).C("standardDeviation").Find(nil).All(&sds)
 	}
-	defer session.Close()
+	if sds == nil {
+		sds = []StandardDeviation{}
+	}
 	return sds, err
 }
 

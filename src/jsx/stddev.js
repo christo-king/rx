@@ -19,7 +19,9 @@ export class StandardDeviation extends React.Component {
     }
 
     isValid() {
-        return this.parse(this.state.value) ? true : false;
+        return (this.state.value &&
+            this.state.value.length > 0 &&
+            this.parse(this.state.value)) ? true : false;
     }
 
     save() {
@@ -30,11 +32,11 @@ export class StandardDeviation extends React.Component {
 
     parse(numbers) {
         try {
-            return self.getPointsList(this.state.value)
-                .filter(self.isNumeric)
+            return numbers.split(/[, ]/)
+                .filter(this.isNumeric)
                 .map(parseFloat);
         } catch (e) {
-            console.debug(e);
+            console.info(e);
         }
         return null;
     }
@@ -53,3 +55,5 @@ export class StandardDeviation extends React.Component {
         )
     }
 }
+
+module.exports = StandardDeviation;

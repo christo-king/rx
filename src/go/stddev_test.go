@@ -11,6 +11,8 @@ var stddevTests = []struct {
 }{
 	{[]float64{5, 10, 10, 10, 15}, 3.2},
 	{[]float64{11, 12, 15, 14, 13, 14}, 1.3},
+	{[]float64{}, 0},
+	{nil, 0},
 }
 
 func TestCalcStdDev(t *testing.T) {

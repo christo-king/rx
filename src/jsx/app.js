@@ -29,9 +29,10 @@ class App extends React.Component {
     }
 
     saveStandardDeviation(numberList) {
-        services.saveStandardDeviation(numberList).then(sd => {
+        service.saveStandardDeviation(numberList).then(sd => {
+            console.log(sd);
             this.refetch();
-        })
+        }).catch(console.error)
     }
 
     render() {
@@ -42,8 +43,7 @@ class App extends React.Component {
                 <Row>
                     <ServerList listener={this.serverChanged.bind(this)}/>
                     <StandardDeviation listener={this.saveStandardDeviation.bind(this)}
-                                       server={this.state.server}
-                                       ref={(r) => this.newStandardDeviationList = r}/>
+                                       server={this.state.server} />
                 </Row>
                 {/*<ListStdDevs standardDeviations={[]} server={this.state.server}*/}
                 {/*ref={(r) => this.standardDeviationList = r}/>*/}
