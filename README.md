@@ -2,10 +2,10 @@
 
 -----
 
-###And Example of Go services with a React.js interface
+### And Example of Go services with a React.js interface
 This project was built with Docker (docker-compose, specifically) and usees a MySQL database to house standard deviations calculated form user input.  
 
-###Required Software
+### Required Software
 This project was built with the following technologies, which are therefore also be recommended for its use.
 - [Docker](link:https://www.docker.com/)
 - [Node.js](link:https://nodejs.org/en/)
