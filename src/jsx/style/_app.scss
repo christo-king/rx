@@ -7,8 +7,9 @@
 
   .header {
     background-color: $backContrast;
-    padding: 15px;
-    margin: 15px;
+    .header-title {
+      margin-top: 25px;
+    }
   }
 
 }
