@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"time"
+	"github.com/gorilla/mux"
 )
 
 func HandleListStandardDeviations(w http.ResponseWriter, r *http.Request) HttpError {
@@ -23,17 +24,13 @@ func HandleListStandardDeviations(w http.ResponseWriter, r *http.Request) HttpEr
 }
 
 func HandleGetStandardDeviation(w http.ResponseWriter, r *http.Request) HttpError {
-	//vars := mux.Vars(r)
-	geterr := HttpOK()
-	strout, jsonerr := json.Marshal([]StandardDeviation{})
-	if jsonerr != nil {
-		geterr = NewLogHttpError(500, "Unable to serialize standard deviation", jsonerr)
-	} else {
-		w.Write(strout)
+	vars := mux.Vars(r)
+	sd, err := get(vars["id"])
+	if err != nil {
+		return NewLogHttpError(500, "Unable to serialize standard deviation", err)
 	}
-	log.Print(strout)
-	w.Write(strout)
-	return geterr
+	json.NewEncoder(w).Encode(sd)
+	return HttpOK()
 }
 
 func HandlePostStandardDeviation(w http.ResponseWriter, r *http.Request) HttpError {

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"gopkg.in/mgo.v2/bson"
 	"time"
 )
 
@@ -11,7 +10,7 @@ type StandardDeviationPoints struct {
 
 type StandardDeviation struct {
 	StandardDeviationPoints
-	Id      bson.ObjectId `json:"id",bson:"_id,"`
-	Created time.Time     `json:"created"`
-	Answer  float64       `json:"answer"`
+	Id      string    `json:"id" bson:"_id"`
+	Created time.Time `json:"created"`
+	Answer  float64   `json:"answer"`
 }
