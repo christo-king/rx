@@ -26,7 +26,7 @@ func main() {
 	post := HttpErrorHandler{HandlePostStandardDeviation}
 	router.HandleFunc("/standardDeviation", post.HandleHttpErrors).Methods("POST")
 
-	router.PathPrefix("/").Handler(http.FileServer(http.Dir("/static/")))
+	//router.PathPrefix("/").Handler(http.FileServer(http.Dir("/static/")))
 
 	srv := http.Server{Addr: Config.Host, Handler: router}
 	srv.ListenAndServe()
