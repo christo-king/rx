@@ -5,16 +5,25 @@ import fetch from 'isomorphic-fetch';
 
 class Services {
    constructor() {
-      this.host = "localhost:3000"
+      this.host = "localhost:8080"
+      this.type = ""; // go, java, or ruby
+   }
+
+   setHost(host) {
+      this.host = host;
+   }
+
+   hostify(url) {
+      return "http://" + this.host + url;
    }
 
    listStandardDeviations() {
-      return fetch('/go/standardDeviation').then(sds => sds.json());
+      return fetch(this.hostify('/standardDeviation')).then(sds => sds.json());
    }
 
    saveStandardDeviation(numbers) {
       let body = JSON.stringify({points: numbers});
-      var request = new Request('/go/standardDeviation', {
+      var request = new Request(this.hostify('/standardDeviation'), {
          method: 'POST',
          mode: 'cors',
          body: body
