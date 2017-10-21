@@ -9,6 +9,7 @@ services:
       - 80:80
     links:
       - gosrv
+      - javasrv
 
   rxmg:
     image: mongo
@@ -33,5 +34,13 @@ services:
       - ./src/static:/static
     ports:
       - 3000:3000
+    links:
+      - rxmg
+
+  javasrv:
+    container_name: javasrv
+    build: ../rx-java/
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://rxmg:27017/stddev
     links:
       - rxmg
